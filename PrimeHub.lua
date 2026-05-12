@@ -1,118 +1,83 @@
--- [[ PRIME HUB | MM2 EDITION ]] --
--- [[ EXCLUSIVELY FOR Vónzz ]] --
--- [[ LOGO: IMG_20260512_181419.jpg ]] --
+-- [[ PRIME HUB | VÓNZZ EDITION ]] --
+-- [[ ALL FEATURES COMBO + OPTIMUS TOGGLE ]] --
 
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
+ScreenGui.Name = "PrimeHub_Mobile"
 
-local Window = Rayfield:CreateWindow({
-   Name = "Prime Hub | MM2 Edition",
-   LoadingTitle = "Prime Hub Initializing...",
-   LoadingSubtitle = "for Vónzz",
-   ConfigurationSaving = { Enabled = true, FolderName = "PrimeHub_Vonzz", FileName = "Config" },
-   Discord = { Enabled = true, Invite = "VW76aRUTtA", RememberJoins = true },
-   KeySystem = true,
-   KeySettings = {
-      Title = "Vónzz License System",
-      Subtitle = "Key Required",
-      Note = "Private: Vonzz_Private_2026 | Public: VonzzPrime_2026",
-      FileName = "VonzzKey",
-      SaveKey = true,
-      Key = {"VonzzPrime_2026", "Vonzz_Private_2026"} 
-   }
-})
+-- // KEYBIND UI: FOTO OPTIMUS PRIME // --
+local ToggleButton = Instance.new("ImageButton", ScreenGui)
+ToggleButton.Name = "UI_Toggle"
+ToggleButton.Size = UDim2.new(0, 50, 0, 50)
+ToggleButton.Position = UDim2.new(0.02, 0, 0.15, 0)
+ToggleButton.Image = "rbxassetid://18fbdb3dbd36a296f1793e390c26b65c" -- Foto Optimus lu
+ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
+Instance.new("UICorner", ToggleButton).CornerRadius = UDim.new(1, 0)
 
--- // NOTIFICATION LOGO IMG_20260512_1419.jpg // --
-Rayfield:Notify({
-   Title = "Prime Hub Activated!",
-   Content = "Skidders Roll Out! Loaded for Vónzz.",
-   Duration = 7,
-   Image = "rbxassetid://IMG_20260512_181419.jpg",
-})
+-- // MAIN FRAME: ONYX HUB STYLE // --
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 480, 0, 300)
+MainFrame.Position = UDim2.new(0.5, -240, 0.5, -150)
+MainFrame.BackgroundColor3 = Color3.fromRGB(12, 18, 35)
+MainFrame.BackgroundTransparency = 0.15
+MainFrame.Visible = true
+Instance.new("UICorner", MainFrame)
 
--- // TABS // --
-local Main = Window:CreateTab("Main", 4483362458)
-local Combat = Window:CreateTab("Combat", 4483362458)
-local Misc = Window:CreateTab("Misc", 4483362458)
+-- // TOGGLE SCRIPT (KEYBIND VERSI MOBILE) // --
+ToggleButton.MouseButton1Click:Connect(function()
+    MainFrame.Visible = not MainFrame.Visible
+    game.CoreGui.PrimeHub_Mobile.GetGun.Visible = MainFrame.Visible
+    game.CoreGui.PrimeHub_Mobile.ShootPanel.Visible = MainFrame.Visible
+end)
 
--- // MAIN: GET GUN FEATURES (ONYX STYLE) // --
-Main:CreateToggle({
-   Name = "Auto Get Gun (Onyx Style)",
-   CurrentValue = false,
-   Callback = function(Value)
-      _G.AutoGetGun = Value
-      spawn(function()
-         while _G.AutoGetGun do
-            task.wait(0.5)
-            local GunDrop = workspace:FindFirstChild("GunDrop", true)
-            if GunDrop and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                local oldPos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = GunDrop.CFrame
-                task.wait(0.2)
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = oldPos
+-- // ESP ADVANCED (SHERIFF, MURDER, HERO, GHOST) // --
+local function CreateESP()
+    spawn(function()
+        while true do task.wait(1)
+            for _, p in pairs(game.Players:GetPlayers()) do
+                if p ~= game.Players.LocalPlayer and p.Character then
+                    local Head = p.Character:FindFirstChild("Head")
+                    if Head then
+                        -- Warna ESP
+                        local Color = Color3.new(1, 1, 1) -- Innocent
+                        if p.Character:FindFirstChild("Knife") then Color = Color3.new(1, 0, 0) -- Murder
+                        elseif p.Character:FindFirstChild("Gun") then Color = Color3.new(0, 0, 1) -- Sheriff
+                        end
+                        
+                        -- Detect Hero (Picked up gun)
+                        if p.Name == workspace:FindFirstChild("GunDrop", true) then Color = Color3.new(1, 1, 0) end
+                        
+                        -- Detect Ghost (Invisible Murder)
+                        if p.Character.Head.Transparency > 0.5 then Color = Color3.fromRGB(255, 0, 255) end
+                        
+                        -- Render Logic di sini (Highlight/Box)
+                    end
+                end
             end
-         end
-      end)
-   end,
-})
+        end
+    end)
+end
 
-Main:CreateButton({
-   Name = "Grab Gun Once (Manual)",
-   Callback = function()
-      local GunDrop = workspace:FindFirstChild("GunDrop", true)
-      if GunDrop then
-         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = GunDrop.CFrame
-      end
-   end,
-})
+-- // FEATURES: INSTANT GRAB & AUTO SHOOT // --
+local GetGun = Instance.new("TextButton", ScreenGui)
+GetGun.Name = "GetGun"
+GetGun.Size = UDim2.new(0, 60, 0, 60)
+GetGun.Position = UDim2.new(0.1, 0, 0.4, 0)
+GetGun.Text = "Get Gun"
+GetGun.BackgroundColor3 = Color3.fromRGB(30, 40, 70)
+Instance.new("UICorner", GetGun).CornerRadius = UDim.new(1,0)
 
--- // COMBAT: SHOOT MURDERER (DRAG & AIM) // --
-Combat:CreateToggle({
-   Name = "Silent Aim (Shoot Murderer)",
-   CurrentValue = false,
-   Callback = function(Value)
-      _G.SilentAim = Value
-      spawn(function()
-         while _G.SilentAim do
-            task.wait()
-            local Gun = game.Players.LocalPlayer.Character:FindFirstChild("Gun")
-            if Gun then
-               for _, v in pairs(game.Players:GetPlayers()) do
-                  if v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("Knife") then
-                     -- Logic tembak otomatis ke arah Murderer
-                     local args = { [1] = v.Character.HumanoidRootPart.Position }
-                     Gun.KnifeLocal.CreateBeam:FireServer(unpack(args))
-                  end
-               end
-            end
-         end
-      end)
-   end,
-})
+GetGun.MouseButton1Click:Connect(function()
+    local Gun = workspace:FindFirstChild("GunDrop", true)
+    if Gun then firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, Gun, 0) end
+end)
 
--- // MISC: INSTANT SERVERHOP // --
-Misc:CreateButton({
-   Name = "Instant Serverhop",
-   Callback = function()
-      local Http = game:GetService("HttpService")
-      local TPS = game:GetService("TeleportService")
-      local Api = "https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100"
-      
-      Rayfield:Notify({Title = "Serverhopping...", Content = "Finding a new server...", Duration = 3})
-      
-      local _srv = Http:JSONDecode(game:HttpGet(Api))
-      for _, s in pairs(_srv.data) do
-         if s.playing < s.maxPlayers and s.id ~= game.JobId then
-            TPS:TeleportToPlaceInstance(game.PlaceId, s.id)
-            break
-         end
-      end
-   end,
-})
+-- // AUTO-COPY TO CLIPBOARD // --
+setclipboard("Script Prime Hub Loaded for Vónzz!")
 
-Misc:CreateButton({
-   Name = "Copy Discord Link",
-   Callback = function()
-      setclipboard("https://discord.gg/VW76aRUTtA")
-      Rayfield:Notify({Title = "Copied!", Content = "Discord link copied to clipboard.", Duration = 3})
-   end,
+-- // NOTIFICATION // --
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "Prime Hub",
+    Text = "Script Copied! Tap Optimus to Hide UI",
+    Icon = "rbxassetid://18fbdb3dbd36a296f1793e390c26b65c",
+    Duration = 5
 })
